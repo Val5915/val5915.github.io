@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🦆 Code Canard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <audio id="duckSound" src="sounds/duck.mp3" preload="auto"></audio>
+
+  <body>
+    <!-- blobs décoratifs -->
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+    <main class="wrap">
+      <header class="header">
+        <div class="brand">
+          <div class="logo">🦆</div>
+          <div>
+            <h1>Code Canard</h1>
+            <p class="subtitle">
+              Entre le code trouvé sur le canard pour découvrir une bêtise
+              d’enfance.
+            </p>
+          </div>
+        </div>
+        <div class="pill">100 canards • 100 souvenirs</div>
+      </header>
+
+      <section class="grid">
+        <!-- entrée -->
+        <div class="card">
+          <h2>🔎 Entrer un code</h2>
+
+          <div class="form">
+            <input
+              id="codeInput"
+              placeholder="A1"
+              maxlength="2"
+              autocomplete="off"
+            />
+            <button id="btn">Afficher</button>
+          </div>
+
+          <p class="hint">Astuce : pas sensible à la casse (a1 = A1)</p>
+        </div>
+
+        <!-- résultat -->
+        <div class="card result">
+          <div class="result-header">
+            <span class="badge" id="badge">—</span>
+            <span class="status" id="status">Prêt</span>
+          </div>
+
+          <p class="message" id="message">
+            Entre un code pour afficher une bêtise 🫣
+          </p>
+          <p class="riddle" id="riddle">Quatre visages, un seul mot.</p>
+
+          <div class="gallery" id="gallery">
+            <img src="images/1.jpg" alt="Souvenir 1" />
+            <img src="images/2.png" alt="Souvenir 2" />
+            <img src="images/3.jpg" alt="Souvenir 3" />
+            <img src="images/4.webp" alt="Souvenir 4" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const riddle = document.getElementById("riddle");
+      const duckSound = document.getElementById("duckSound");
+
+      const gallery = document.getElementById("gallery");
+      const data = {
+        A1: "Quand j’étais gardé par papy et mamie je me relevé pour regarder un peu la télé quand tu avais quitté l’appartement ils étaient de mèche avec moi",
+        B2: "Les pâtes c’est la vie",
+        C3: "Au collège je me suis trompé de bus j’ai été déposé à Marcoing et je suis rentrée à pied",
+        D4: "Je donnais toujours mon assiette à l’autre pour qu’il l’a termine en cachette quand je n’aimais pas",
+        E5: "Toujours des chaussettes avec des trous aux pieds",
+        F6: "Dans la salle de jeu à cité Amérique on piquait des pâtes cru dans la réserve et je les faisais « cuir » à l’eau froide dans notre dînette pour qu’on mange des pâtes devant la télé",
+        G7: "J’avais une collection de dinosaure et je disais que c’était un musée",
+        H8: "Mon sport est en pleine nature",
+        I9: "j’ai déjà fait une bataille de boule de crottins",
+        J0: "les rouleaux rouge et blanc j’adore",
+        K1: "a cité Amérique je me pendais avec la ceinture du peignoirs à mon lit en hauteur pour faire de la balançoire",
+        L2: "j’ai eu l’idée de cacher les canard chez vous",
+        M3: "on vous aimes",
+        N4: "j’adore les jeans baskets",
+        O5: "18 novembre 2025",
+        P6: "j’adore les moments potager/semis",
+        Q7: "on partira en vacances ensemble !",
+        R8: "je déteste les brocolis",
+        S9: "je déteste le choux fleurs",
+        T0: "un été sans salade de pâtes n’est pas un été",
+        U1: "coco le meilleur Disney",
+        V2: "j’adore Disney",
+        W3: "quand est ce qu’on retourne à Disney ensemble ?",
+        X4: "au collège je piquais les pièces que je trouvais pour aller m’acheter des bonbons au petit carrefour",
+        Y5: "les sushis mon plat préféré",
+        Z6: "sauce sucrée pour accompagner les maki",
+
+        "1A": "je rêve d’aller au Mexique",
+        "2B": "a quand la prochaine maquette de noël ?",
+        "3C": "je me souviendrais toujours ce fameux Noël à noyelle au moment de mettre l’étoile dans le sapin",
+        "4D": "j’ai pris une cuite lors d’un voyage scolaire au lycée",
+        "5E": "j’aime tout ce qui est ésotérique",
+        "6F": "j’ai déjà manifesté au collège je ne sais même plus pour quoi c’était juste cool",
+        "7G": "au bout de combien de temps avez vous trouvé ce canard ?",
+        "8H": "j’ai laissé mourir mon lézard de compagnie en plein soleil à cité Amérique … le pauvre",
+        "9I": "je sais que vous avez laissé échapper mon lapin à caudry",
+        "0J": "c’est rigolo notre blague des canards ?",
+
+        A2: "j’adorais faire des cabanes",
+        B3: "je dors encore avec mon doudou",
+        C4: "j’adore le dessin",
+        D5: "j’adore la bière rouge",
+        E6: "quand vous étiez en vacances je prenais le quad pour aller vider les brouettes de fumiers au fond ça allait plus vite",
+        F7: "un jour avec la voiture de maman j’ai glissé dans un rond point à cause d’une pluie verglaçante j’ai griffé la jante mais j’ai rien dit",
+        G8: "j’ai déjà volé un A à cora",
+        H9: "tulutulu tututululu tulutulu tutululu",
+        I0: "nous étions 4 pour les cacher",
+        J1: "en manque d’inspiration",
+        K2: "celui qui dit qui l’a fait je lui offre ……. un sandwich",
+        L3: "j’aimais faire du roller dans le garage à cité Amérique",
+        M4: "invasion de canard",
+        N5: "J’essayais de faire du feu avec des silex dans le jardin de noyelle",
+        O6: "j’étais missionné de chercher des paquets de prince a noyelle dans la cuisine en secret quand papa était dans le canapé",
+        P7: "j’étais toujours en retard au collège car on se faisait un foot avec Benoît dans la cours.",
+        Q8: "les balles de ping pong disparaissait car j’éssayais de faire des fumigènes avec de l’aluminium à noyelle",
+        R9: "j’ai fais mon premier bisous chez Clara scudery",
+        S0: "j'adore le chocolat",
+        T1: "les crudités c’est cool",
+        U2: "j’avais cassé une voiturette en métal dans la caisse sous le lit de la première chambre chez mamie et papi",
+        V3: "on a fait le rituel de la dame blanche a minuit avec Diego et joana (j’ai eu trop peur)",
+        W4: "je brûlais des rouleaux de sopalin derrière le cabanon a noyelle",
+        X5: "j’ai fait venir papa au city a noyelle car j’avais mal au pouce et je n’arrivait pas a rentrer",
+        Y6: "J’essayais de brûler les haies en sapin derrière le cabanon à cité Amérique.",
+        Z7: "mon sport est a l’extérieur l’été",
+
+        "1B": "j’ai déjà piqué un peu de vodka a papa sans que ça se voit pour faire une soirée",
+        "2C": "les bonbons framboises j'adore.",
+        "3D": "j’ai essayé de croquer une tige de rhubarbe a noyelle",
+        "4E": "super ça fait un canard en plus !",
+        "5F": "des gniognios des kikis",
+        "6G": "mon partenaire parle toujours fort",
+        "7H": "ma chambre n’est pas toujours en bordel rohh",
+        "8I": "ça se trouve vous avez trouver ce canard mais en 2028",
+        "9J": "je n’avais pas d’idée pour celui la",
+        "0A": "je ne veux pas plus de deux enfants",
+        A3: "je suis tombé en trotinette verte en bas de la raquette à noyelle",
+        B4: "je me suis déjà marié",
+        C5: "le matin n’est pas pour moi",
+        D6: "je passe pas mal de temps avec val",
+        E7: "je joue du piano",
+        F8: "taper dans un ballon me rend joyeux",
+        G9: "j’ai un nain pour meilleur ami",
+        H0: "j’ai un mi-orphelin pour meilleur ami",
+        I1: "j’ai eu environ 5 anesthésies",
+        J2: "je suis née le mois de la blague",
+        K3: "j’aurais fait 10 ans d’études à la fin",
+        L4: "j’ai toujours batue l’autre au judo",
+        M5: "donnez moi des légos",
+        N6: "j’ai toujours voulu des triops",
+        O7: "je me souviendrais quand à noel à noyelle j’ai eu un jeu de bille sans l’avoir commandé",
+        P8: "je suis tombé en vélo dans le canal",
+        Q9: "j’ai traversé le canal gelé de masnières",
+        R0: "le policier municipal en scooter nous a couru après à masnieres quand on lançait des cailloux dans le canal ( on s’est évadé )",
+        S1: "on a deja fait une tentative de manif contre la réforme du bac en mettant un cadenas a vélo de la grille du college ( ça a duré 20 minutes quand même)",
+        T2: "j’ai déjà fait une partie de sonnette mais en frappant la porte, la vitre s’est brisé",
+        U3: "quand j’avais fait ma 20em heure de conduite, vous étiez en vacance, j’ai pris la voiture pour aller au lycée une journée",
+        V4: "on escaladait les grands sapins a coté du city à noyelle",
+        W5: "j’ai eu ma première cuite vodka orange a 15ans",
+        X6: "sauce salé pour les makis !!!!",
+        Y7: "j’ai jeté la bague dans le buisson",
+        Z8: "j’ai mieux tenu le champagne dominicain que papa à saona (on a eu droit à un guide en rentrant lol)",
+        "1C": "On escalait tout ce qu’on trouvait dans noyelle avec un mec de la rue sorel",
+        "2D": "🎉 Bravo : tu viens de trouver le 100e canard !",
+      };
+
+      const input = document.getElementById("codeInput");
+      const button = document.getElementById("btn");
+      const badge = document.getElementById("badge");
+      const status = document.getElementById("status");
+      const message = document.getElementById("message");
+      const confetti = document.getElementById("confetti");
+
+      function normalize(v) {
+        return (v || "").trim().toUpperCase();
+      }
+
+      function burstConfetti() {
+        // nettoie l'ancien
+        confetti.innerHTML = "";
+        confetti.classList.remove("run");
+        void confetti.offsetWidth; // force reflow
+
+        // crée des confettis
+        const pieces = 200;
+        for (let i = 0; i < pieces; i++) {
+          const p = document.createElement("i");
+          p.style.left = Math.random() * 100 + "vw";
+          p.style.animationDelay = Math.random() * 0.25 + "s";
+          p.style.transform = `translate3d(0,0,0) rotate(${Math.random() * 360}deg)`;
+          p.style.setProperty("--x", Math.random() * 240 - 120 + "px");
+          p.style.setProperty("--r", Math.random() * 720 - 360 + "deg");
+          p.style.setProperty("--d", 2200 + Math.random() * 1600 + "ms"); // durée
+          p.style.opacity = (0.7 + Math.random() * 0.3).toFixed(2);
+          p.style.width = 6 + Math.random() * 6 + "px";
+          p.style.height = 10 + Math.random() * 10 + "px";
+          confetti.appendChild(p);
+        }
+
+        confetti.classList.add("run");
+
+        // supprime après
+        setTimeout(() => {
+          confetti.classList.remove("run");
+          confetti.innerHTML = "";
+        }, 5200);
+      }
+
+      function playDuck() {
+        duckSound.currentTime = 0; // permet de rejouer rapidement
+        duckSound.play().catch(() => {
+          // certains navigateurs bloquent si pas d'interaction
+        });
+      }
+
+      function celebrate() {
+        // petite “vibration” sur la carte résultat
+        const card = document.querySelector(".card.result");
+        card.classList.remove("celebrate");
+        void card.offsetWidth;
+        card.classList.add("celebrate");
+
+        burstConfetti();
+      }
+
+      function show() {
+        const code = normalize(input.value);
+        badge.textContent = code || "—";
+
+        // reset
+        gallery.classList.remove("show");
+        riddle.classList.remove("show");
+
+        if (!code) {
+          status.textContent = "Prêt";
+          message.textContent = "Entre un code pour afficher une bêtise 🫣";
+          return;
+        }
+
+        // 🎉 CAS SPÉCIAL
+        if (code === "3D") {
+          status.textContent = "Souvenir spécial 📸";
+          message.textContent = "Un canard un peu particulier…";
+          riddle.classList.add("show"); // 👈 ICI
+          gallery.classList.add("show");
+          celebrate();
+          playDuck();
+          return;
+        }
+
+        // cas normal
+        if (data[code]) {
+          status.textContent = "Trouvé ✅";
+          message.textContent = data[code];
+          celebrate();
+          playDuck();
+        } else {
+          status.textContent = "Inconnu 🤔";
+          message.textContent = "Ce code ne correspond à aucun canard 😄";
+        }
+      }
+
+      button.addEventListener("click", show);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") show();
+      });
+    </script>
+  </body>
+</html>
